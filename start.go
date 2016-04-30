@@ -46,7 +46,7 @@ func getTechGroupsInDallas() (groups []Group, err error) {
 
 func UpdateCalendar() {
 	baseURL := "https://api.meetup.com/"
-	eventURLParams := "/events?&sign=true&photo-host=public&page=" + config.LookupEvents + "&key="
+	eventURLParams := "/events?&photo-host=public&page=" + config.LookupEvents + "&key="
 	var meetupGroups []Group
 	var err error
 
@@ -76,7 +76,7 @@ func UpdateCalendar() {
 			continue
 		}
 
-		fmt.Println("Group: ", group.Urlname," Number of Events:",len(nextEvents)," Lookup:",config.LookupEvents)
+		fmt.Println("Group: ", group.Urlname," Number of Events:",len(nextEvents)," Lookup:",config.LookupEvents, "url:",eventURL)
 		for _, eachEvent := range nextEvents {
 			AddEventToGCal(ConvertMeetupEventToGCalEvent(group, eachEvent))
 		}
