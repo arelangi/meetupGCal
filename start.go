@@ -8,7 +8,6 @@ import (
 	"os"
 	"strings"
 	"time"
-	"fmt"
 )
 
 var (
@@ -45,15 +44,15 @@ func getTechGroupsInDallas() (groups []Group, err error) {
 }
 
 func UpdateCalendar() {
-	baseURL := "https://api.meetup.com/"
-	eventURLParams := "/events?&photo-host=public&page=" + config.LookupEvents + "&key="
-	var meetupGroups []Group
 	var err error
-
 	if err = getConfig(ConfigFilePath); err != nil {
 		log.Println(err)
 		os.Exit(1)
 	}
+
+	baseURL := "https://api.meetup.com/"
+	eventURLParams := "/events?&photo-host=public&page=" + config.LookupEvents + "&key="
+	var meetupGroups []Group
 
 	if meetupGroups, err = getTechGroupsInDallas(); err != nil {
 		log.Println(err)
@@ -76,7 +75,6 @@ func UpdateCalendar() {
 			continue
 		}
 
-		fmt.Println("Group: ", group.Urlname," Number of Events:",len(nextEvents)," Lookup:",config.LookupEvents, "url:",eventURL)
 		for _, eachEvent := range nextEvents {
 			AddEventToGCal(ConvertMeetupEventToGCalEvent(group, eachEvent))
 		}
