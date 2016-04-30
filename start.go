@@ -75,6 +75,7 @@ func UpdateCalendar() {
 			continue
 		}
 
+		fmt.Println("Group: ", group.Urlname," Number of Events:",len(nextEvents)," Lookup:",config.LookupEvents)
 		for _, eachEvent := range nextEvents {
 			AddEventToGCal(ConvertMeetupEventToGCalEvent(group, eachEvent))
 		}
