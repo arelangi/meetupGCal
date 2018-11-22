@@ -16,18 +16,18 @@ func AddEventToGCal(event *calendar.Event, secretConf []byte) {
 
 	gConfig, err := google.ConfigFromJSON(secretConf, calendar.CalendarScope)
 	if err != nil {
-		mlog.Error("Unable to parse client secret file to gConfig: %v", err)
+		mlog.Error(fmt.Sprintf("Unable to parse client secret file to gConfig: %v", err.Error()))
 	}
 	client := getClient(ctx, gConfig)
 
 	srv, err := calendar.New(client)
 	if err != nil {
-		mlog.Error("Unable to retrieve calendar Client %v", err)
+		mlog.Error(fmt.Sprintf("Unable to retrieve calendar Client %v", err.Error()))
 	}
 	gCalInsertedEvent, err := srv.Events.Insert(config.CalendarId, event).Do()
 	if err != nil {
 		if !strings.Contains(err.Error(), "duplicate") {
-			mlog.Error("Unable to create event. %v\n", err)
+			mlog.Error(fmt.Sprintf("Unable to create event. %v\n", err.Error()))
 		}
 		return
 	}

@@ -2,8 +2,8 @@ package meetupGCal
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
-	"mlog"
 	"net/http"
 	"os"
 	"strings"
@@ -53,7 +53,7 @@ func UpdateCalendar(configFilePath, secretFilePath string) {
 
 	secretConf, err := ioutil.ReadFile(secretFilePath)
 	if err != nil {
-		mlog.Fatal("Unable to read client secret file: %v", err.Error())
+		mlog.Fatal(fmt.Sprintf("Unable to read client secret file: %v", err.Error()))
 	}
 
 	baseURL := "https://api.meetup.com/"
