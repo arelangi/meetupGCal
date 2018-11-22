@@ -2,7 +2,6 @@ package meetupGCal
 
 import (
 	"fmt"
-	"io/ioutil"
 	"log"
 	"strings"
 	"time"
@@ -12,13 +11,10 @@ import (
 	"google.golang.org/api/calendar/v3"
 )
 
-func AddEventToGCal(event *calendar.Event) {
+func AddEventToGCal(event *calendar.Event, secretConf []byte) {
 	ctx := context.Background()
-	b, err := ioutil.ReadFile("client_secret.json")
-	if err != nil {
-		log.Fatalf("Unable to read client secret file: %v", err)
-	}
-	gConfig, err := google.ConfigFromJSON(b, calendar.CalendarScope)
+
+	gConfig, err := google.ConfigFromJSON(secretConf, calendar.CalendarScope)
 	if err != nil {
 		log.Fatalf("Unable to parse client secret file to gConfig: %v", err)
 	}

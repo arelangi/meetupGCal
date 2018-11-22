@@ -11,8 +11,7 @@ import (
 )
 
 var (
-	config         Config
-	ConfigFilePath string
+	config Config
 )
 
 const (
@@ -43,11 +42,16 @@ func getTechGroupsInDallas() (groups []Group, err error) {
 	return
 }
 
-func UpdateCalendar() {
+func UpdateCalendar(configFilePath, secretFilePath string) {
 	var err error
-	if err = getConfig(ConfigFilePath); err != nil {
+	if err = getConfig(configFilePath); err != nil {
 		log.Println(err)
 		os.Exit(1)
+	}
+
+	secretConf, err := ioutil.ReadFile(secretFilePath)
+	if err != nil {
+		log.Fatalf("Unable to read client secret file: %v", err)
 	}
 
 	baseURL := "https://api.meetup.com/"
@@ -76,7 +80,7 @@ func UpdateCalendar() {
 		}
 
 		for _, eachEvent := range nextEvents {
-			AddEventToGCal(ConvertMeetupEventToGCalEvent(group, eachEvent))
+			AddEventToGCal(ConvertMeetupEventToGCalEvent(group, eachEvent), secretConf)
 		}
 	}
 }
