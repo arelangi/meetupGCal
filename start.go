@@ -20,6 +20,10 @@ const (
 	baseURL = "https://api.meetup.com/"
 )
 
+func init() {
+	mlog.SetPrintStackTrace(false)
+}
+
 func getConfig(configFile string) (err error) {
 	content, err := ioutil.ReadFile(configFile)
 	if err != nil {
