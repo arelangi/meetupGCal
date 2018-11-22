@@ -3,11 +3,13 @@ package meetupGCal
 import (
 	"encoding/json"
 	"io/ioutil"
-	"log"
+	"mlog"
 	"net/http"
 	"os"
 	"strings"
 	"time"
+
+	"gitlab.logzero.in/arelangi/mlog"
 )
 
 var (
@@ -45,13 +47,13 @@ func getTechGroupsInDallas() (groups []Group, err error) {
 func UpdateCalendar(configFilePath, secretFilePath string) {
 	var err error
 	if err = getConfig(configFilePath); err != nil {
-		log.Println(err)
+		mlog.Error("Failed to get the config", mlog.Items{"error": err})
 		os.Exit(1)
 	}
 
 	secretConf, err := ioutil.ReadFile(secretFilePath)
 	if err != nil {
-		log.Fatalf("Unable to read client secret file: %v", err)
+		mlog.Fatal("Unable to read client secret file: %v", err.Error())
 	}
 
 	baseURL := "https://api.meetup.com/"
@@ -59,7 +61,7 @@ func UpdateCalendar(configFilePath, secretFilePath string) {
 	var meetupGroups []Group
 
 	if meetupGroups, err = getTechGroupsInDallas(); err != nil {
-		log.Println(err)
+		mlog.Error("Failed to get the tech groups in dallas")
 	}
 
 	for _, group := range meetupGroups {
@@ -69,13 +71,13 @@ func UpdateCalendar(configFilePath, secretFilePath string) {
 
 		resp, err := Call(eventURL)
 		if err != nil {
-			log.Println(err)
+			mlog.Error("Failed to make a call", mlog.Items{"error": err, "group": group.Name})
 			continue
 		}
 
 		err = json.Unmarshal(resp, &nextEvents)
 		if err != nil {
-			log.Println(err)
+			mlog.Error("Failed to unmarshal the data", mlog.Items{"error": err, "group": group.Name})
 			continue
 		}
 
@@ -88,13 +90,13 @@ func UpdateCalendar(configFilePath, secretFilePath string) {
 func Call(url string) (resp []byte, err error) {
 	response, err := http.Get(url)
 	if err != nil {
-		log.Println(err)
+		mlog.Error("Failed to make the call to the url", mlog.Items{"error": err, "url": url})
 		return
 	}
 	defer response.Body.Close()
 	resp, err = ioutil.ReadAll(response.Body)
 	if err != nil {
-		log.Println(err)
+		mlog.Error("Failed to read the body", mlog.Items{"error": err, "url": url})
 		return
 	}
 	return

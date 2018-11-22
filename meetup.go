@@ -2,10 +2,10 @@ package meetupGCal
 
 import (
 	"fmt"
-	"log"
 	"strings"
 	"time"
 
+	"gitlab.logzero.in/arelangi/mlog"
 	"golang.org/x/net/context"
 	"golang.org/x/oauth2/google"
 	"google.golang.org/api/calendar/v3"
@@ -16,18 +16,18 @@ func AddEventToGCal(event *calendar.Event, secretConf []byte) {
 
 	gConfig, err := google.ConfigFromJSON(secretConf, calendar.CalendarScope)
 	if err != nil {
-		log.Fatalf("Unable to parse client secret file to gConfig: %v", err)
+		mlog.Error("Unable to parse client secret file to gConfig: %v", err)
 	}
 	client := getClient(ctx, gConfig)
 
 	srv, err := calendar.New(client)
 	if err != nil {
-		log.Fatalf("Unable to retrieve calendar Client %v", err)
+		mlog.Error("Unable to retrieve calendar Client %v", err)
 	}
 	gCalInsertedEvent, err := srv.Events.Insert(config.CalendarId, event).Do()
 	if err != nil {
 		if !strings.Contains(err.Error(), "duplicate") {
-			log.Printf("Unable to create event. %v\n", err)
+			mlog.Error("Unable to create event. %v\n", err)
 		}
 		return
 	}
