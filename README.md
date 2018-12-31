@@ -17,3 +17,5 @@ Apart from this, you will also need to provide a config file of the following fo
 	"zip": "zip code. The program looks for groups in a radius of 50mi"
 }
 ````
+
+Major rever 12/31/18
